@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`ct-editable-switcher`
+Element to switch between view/edit modes for form inputs on the Centular 
+
+@demo demo/index.html 
+-->
+
+<dom-module id="ct-editable-switcher">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'ct-editable-switcher',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'ct-editable-switcher',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
