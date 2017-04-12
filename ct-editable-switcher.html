@@ -1,7 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
-<link rel="import" href="../paper-input/paper-input-error.html">
 
 <!--
 `ct-editable-switcher`
@@ -18,25 +17,16 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
         width: 100%;
       }
 
-
-
     </style>
 
-    <div hidden$="[[editMode]]">
-      <div class="floated-label-placeholder style-scope paper-input-container" aria-hidden="true">[[labelVal]]</div>
+    <div hidden$="[[editMode]]" class="text-container">
+      <label class="label" aria-hidden="true">[[labelVal]]</label>
       <div>[[inputVal]]</div>
     </div>
 
-    <div hidden$="[[!editMode]]">
-      <content  id="input"></content>
+    <div hidden$="[[!editMode]]" class="input-container">
+      <content id="input"></content>
     </div>
-
-
-
-
-
-
-
 
   </template>
 
@@ -51,40 +41,46 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
           ],
 
           properties: {
-              inputVal : {
-                  type: String,
-                  value: "none"
-              },
 
-              labelVal : {
-                  type: String,
-                  value: "none"
-              },
+              inputElem : Object,
+
+              inputVal : String,
+
+              labelVal : String,
 
               editMode: {
                   type: Boolean,
-                  value: function(){ return false }
+                  value: function(){ return false },
+                  observer: '_editModeChangeHandler'
               }
           },
 
           attached : function(){
 
+//              async needed to ensure that values are there to be assigned
               this.async(function(){
                   Polymer.dom(this.$.input).observeNodes(function(info) {
-                      this.set('inputVal', info.addedNodes[1].value);
-                      this.set('labelVal', info.addedNodes[1].label);
+                      this.set('inputElem', info.addedNodes[1]);
+                      this.set('inputVal', this.inputElem.value);
+                      this.set('labelVal', this.inputElem.label);
                   }.bind(this));
               })
 
-
-
-
           },
 
+          _editModeChangeHandler : function(){
+              var inputElem = Polymer.dom(this).getEffectiveChildNodes()[1];
+              this.set('inputVal', inputElem.value);
+          },
 
+          validate : function(){
 
-
-
+              if(this.inputElem && this.inputElem.required) {
+                  return (this.inputElem.validate())
+              } else {
+                  return true;
+              }
+          }
       });
 
   </script>
