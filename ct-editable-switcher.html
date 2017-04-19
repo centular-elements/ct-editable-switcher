@@ -61,8 +61,22 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
               this.async(function(){
                   Polymer.dom(this.$.input).observeNodes(function(info) {
                       this.set('inputElem', info.addedNodes[1]);
-                      this.set('inputVal', this.inputElem.value);
-                      this.set('labelVal', this.inputElem.label);
+
+                      if(this.inputElem.value !== 'on' && this.inputElem.value !== 'off'){
+                          this.set('inputVal', this.inputElem.value);
+                      } else {
+                          var value = (this.inputElem.active) ? 'Yes' : 'No';
+                          this.set('inputVal', value);
+                      }
+
+                      if(this.inputElem.label){
+                          this.set('labelVal', this.inputElem.label);
+                      } else {
+                          this.set('labelVal', this.inputElem.innerText);
+                      }
+
+
+
                   }.bind(this));
               })
 
@@ -70,7 +84,13 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
 
           _editModeChangeHandler : function(){
               var inputElem = Polymer.dom(this).getEffectiveChildNodes()[1];
-              this.set('inputVal', inputElem.value);
+
+              if(inputElem.value !== 'on' && inputElem.value !== 'off'){
+                  this.set('inputVal', inputElem.value);
+              } else {
+                  var value = (inputElem.active) ? 'Yes' : 'No';
+                  this.set('inputVal', value);
+              }
           },
 
           validate : function(){
