@@ -60,20 +60,19 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
 //              async needed to ensure that values are there to be assigned
               this.async(function(){
                   Polymer.dom(this.$.input).observeNodes(function(info) {
-                      this.set('inputElem', info.addedNodes[1]);
 
-                      if(this.inputElem.value !== 'on' && this.inputElem.value !== 'off'){
-                          this.set('inputVal', this.inputElem.value);
+                      var inputElement = this._getInputElem(info.addedNodes);
+
+                      if(inputElement){
+
+                          this.set('inputVal', this._getInputValue(inputElement));
+                          this.set('labelVal', this._getLabelVal(inputElement));
+
                       } else {
-                          var value = (this.inputElem.active) ? 'Yes' : 'No';
-                          this.set('inputVal', value);
+                          throw 'Could not find input element, does it contain class of "input-element"? ';
                       }
 
-                      if(this.inputElem.label){
-                          this.set('labelVal', this.inputElem.label);
-                      } else {
-                          this.set('labelVal', this.inputElem.innerText);
-                      }
+
 
 
 
@@ -83,14 +82,61 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
           },
 
           _editModeChangeHandler : function(){
-              var inputElem = Polymer.dom(this).getEffectiveChildNodes()[1];
+              var inputElem = this._getInputElem(Polymer.dom(this).getEffectiveChildNodes());
 
-              if(inputElem.value !== 'on' && inputElem.value !== 'off'){
-                  this.set('inputVal', inputElem.value);
+              this.set('inputVal', this._getInputValue(inputElem));
+          },
+
+          _getInputElem : function(nodeList) {
+              var element = nodeList.filter(function(node){
+
+                  return (typeof node.classList === "object" && node.classList.contains( 'input-element' ));
+
+              })[0];
+
+              return (element) ? element : false;
+          },
+
+          _getInputValue : function(element) {
+              var value;
+
+              if(!element.active){
+
+                  if(element.value) {
+                      value = element.value;
+                  } else {
+
+                      if(element.selectedItem){
+                          value = element.selectedItem.innerText;
+                      }
+//
+                  }
+
+
               } else {
-                  var value = (inputElem.active) ? 'Yes' : 'No';
-                  this.set('inputVal', value);
+
+                  value = (element.active) ? 'Yes' : 'No';
+
               }
+
+              console.log(value);
+
+              return (value) ? value : false;
+          },
+
+          _getLabelVal : function(element) {
+
+              var label;
+
+              if(element.label){
+                  label = element.label;
+              } else if(element.dataset.label){
+                  label = element.dataset.label;
+              } else {
+                  label = element.innerText;
+              }
+
+              return (label) ? label : false;
           },
 
           validate : function(){
