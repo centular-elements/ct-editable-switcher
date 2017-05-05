@@ -19,9 +19,9 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
 
     </style>
 
-    <div hidden$="[[editMode]]" class="text-container">
-      <label aria-hidden="true">[[labelVal]]</label>
-      <div>[[inputVal]]</div>
+    <div hidden$="[[editMode]]">
+      <paper-input disabled label="[[labelVal]]" aria-hidden="true">
+      </paper-input>
     </div>
 
     <div hidden$="[[!editMode]]" class="input-container">
