@@ -19,9 +19,16 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
 
     </style>
 
-    <div hidden$="[[editMode]]" class="text-container">
-      <label aria-hidden="true">[[labelVal]]</label>
-      <div>[[inputVal]]</div>
+    <div hidden$="[[editMode]]">
+      <paper-input disabled label="[[labelVal]]" aria-hidden="true" value="[[inputVal]]">
+        <template is="dom-if" if="[[prefixVal]]">
+          <div prefix>[[prefixVal]]</div>
+        </template>
+
+        <template is="dom-if" if="[[suffixVal]]">
+          <div suffix>[[suffixVal]]</div>
+        </template>
+      </paper-input>
     </div>
 
     <div hidden$="[[!editMode]]" class="input-container">
@@ -48,6 +55,10 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
 
               labelVal : String,
 
+              prefixVal : String,
+
+              suffixVal : String,
+
               editMode: {
                   type: Boolean,
                   value: function(){ return false },
@@ -67,6 +78,8 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
 
                           this.set('inputVal', this._getInputValue(inputElement));
                           this.set('labelVal', this._getLabelVal(inputElement));
+                          this.set('prefixVal', this._getPrefixVal(inputElement));
+                          this.set('suffixVal', this._getSuffixVal(inputElement));
 
                       } else {
                           throw 'Could not find input element, does it contain class of "input-element"? ';
@@ -119,9 +132,7 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
 
               }
 
-              console.log(value);
-
-              return (value) ? value : false;
+              return (value) ? value : "";
           },
 
           _getLabelVal : function(element) {
@@ -132,11 +143,34 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
                   label = element.label;
               } else if(element.dataset.label){
                   label = element.dataset.label;
-              } else {
-                  label = element.innerText;
               }
 
-              return (label) ? label : false;
+              return (label) ? label : "";
+          },
+
+          _getPrefixVal : function(element) {
+              var prefix = this._computeChildAttrText(element, 'prefix');
+
+              return (prefix) ? prefix : false;
+
+          },
+
+          _getSuffixVal : function(element) {
+              var suffix = this._computeChildAttrText(element, 'suffix');
+
+              return (suffix) ? suffix : false;
+          },
+
+          _computeChildAttrText : function(element, attrName) {
+              var children = element.getEffectiveChildren();
+
+              if(children.length > 0){
+                  var childArr = children.filter(function(d){ return (d.hasAttribute(attrName) )});
+
+                  return (childArr.length > 0) ? childArr[0].innerText : false;
+              } else {
+                  return false;
+              }
           },
 
           validate : function(){
