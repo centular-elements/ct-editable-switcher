@@ -76,6 +76,7 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
 
                       if(inputElement){
 
+                          this.set('inputElem', inputElement);
                           this.set('inputVal', this._getInputValue(inputElement));
                           this.set('labelVal', this._getLabelVal(inputElement));
                           this.set('prefixVal', this._getPrefixVal(inputElement));
@@ -174,6 +175,8 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
           },
 
           validate : function(){
+
+              console.log(this.inputElem);
 
               if(this.inputElem && this.inputElem.required) {
                   return (this.inputElem.validate())
