@@ -10,181 +10,179 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
 -->
 
 <dom-module id="ct-editable-switcher">
-  <template>
-    <style>
-      :host {
-        display: block;
-        width: 100%;
-      }
+    <template>
+        <style>
+            :host {
+                display: block;
+                width: 100%;
+            }
 
-    </style>
+        </style>
 
-    <div hidden$="[[editMode]]">
-      <paper-input disabled label="[[labelVal]]" aria-hidden="true" value="[[inputVal]]">
-        <template is="dom-if" if="[[prefixVal]]">
-          <div prefix>[[prefixVal]]</div>
-        </template>
+        <div hidden$="[[editMode]]">
+            <paper-input disabled label="[[labelVal]]" aria-hidden="true" value="[[inputVal]]">
+                <template is="dom-if" if="[[prefixVal]]">
+                    <div prefix>[[prefixVal]]</div>
+                </template>
 
-        <template is="dom-if" if="[[suffixVal]]">
-          <div suffix>[[suffixVal]]</div>
-        </template>
-      </paper-input>
-    </div>
+                <template is="dom-if" if="[[suffixVal]]">
+                    <div suffix>[[suffixVal]]</div>
+                </template>
+            </paper-input>
+        </div>
 
-    <div hidden$="[[!editMode]]" class="input-container">
-      <content id="input"></content>
-    </div>
+        <div hidden$="[[!editMode]]" class="input-container">
+            <content id="input"></content>
+        </div>
 
-  </template>
+    </template>
 
-  <script>
-      Polymer({
+    <script>
+        Polymer({
 
-          is: 'ct-editable-switcher',
+            is: 'ct-editable-switcher',
 
-          behaviors: [
-              Polymer.IronFormElementBehavior,
-              Polymer.IronValidatableBehavior
-          ],
+            behaviors: [
+                Polymer.IronFormElementBehavior,
+                Polymer.IronValidatableBehavior
+            ],
 
-          properties: {
+            properties: {
 
-              inputElem : Object,
+                inputElem : Object,
 
-              inputVal : String,
+                inputVal : String,
 
-              labelVal : String,
+                labelVal : String,
 
-              prefixVal : String,
+                prefixVal : String,
 
-              suffixVal : String,
+                suffixVal : String,
 
-              editMode: {
-                  type: Boolean,
-                  value: function(){ return false },
-                  observer: '_editModeChangeHandler'
-              }
-          },
+                editMode: {
+                    type: Boolean,
+                    value: function(){ return false },
+                    observer: '_editModeChangeHandler'
+                }
+            },
 
-          attached : function(){
+            attached : function(){
 
 //              async needed to ensure that values are there to be assigned
-              this.async(function(){
-                  Polymer.dom(this.$.input).observeNodes(function(info) {
+                this.async(function(){
+                    Polymer.dom(this.$.input).observeNodes(function(info) {
 
-                      var inputElement = this._getInputElem(info.addedNodes);
+                        var inputElement = this._getInputElem(info.addedNodes);
 
-                      if(inputElement){
+                        if(inputElement){
 
-                          this.set('inputElem', inputElement);
-                          this.set('inputVal', this._getInputValue(inputElement));
-                          this.set('labelVal', this._getLabelVal(inputElement));
-                          this.set('prefixVal', this._getPrefixVal(inputElement));
-                          this.set('suffixVal', this._getSuffixVal(inputElement));
+                            this.set('inputElem', inputElement);
+                            this.set('inputVal', this._getInputValue(inputElement));
+                            this.set('labelVal', this._getLabelVal(inputElement));
+                            this.set('prefixVal', this._getPrefixVal(inputElement));
+                            this.set('suffixVal', this._getSuffixVal(inputElement));
 
-                      } else {
-                          throw 'Could not find input element, does it contain class of "input-element"? ';
-                      }
-
-
+                        } else {
+                            throw 'Could not find input element, does it contain class of "input-element"? ';
+                        }
 
 
 
-                  }.bind(this));
-              })
 
-          },
 
-          _editModeChangeHandler : function(){
-              var inputElem = this._getInputElem(Polymer.dom(this).getEffectiveChildNodes());
+                    }.bind(this));
+                })
 
-              this.set('inputVal', this._getInputValue(inputElem));
-          },
+            },
 
-          _getInputElem : function(nodeList) {
-              var element = nodeList.filter(function(node){
+            _editModeChangeHandler : function(){
+                var inputElem = this._getInputElem(Polymer.dom(this).getEffectiveChildNodes());
 
-                  return (typeof node.classList === "object" && node.classList.contains( 'input-element' ));
+                this.set('inputVal', this._getInputValue(inputElem));
+            },
 
-              })[0];
+            _getInputElem : function(nodeList) {
+                var element = nodeList.filter(function(node){
 
-              return (element) ? element : false;
-          },
+                    return (typeof node.classList === "object" && node.classList.contains( 'input-element' ));
 
-          _getInputValue : function(element) {
-              var value;
+                })[0];
 
-              if(!element.active){
+                return (element) ? element : false;
+            },
 
-                  if(element.value) {
-                      value = element.value;
-                  } else {
+            _getInputValue : function(element) {
+                var value;
 
-                      if(element.selectedItem){
-                          value = element.selectedItem.innerText;
-                      }
+                if(!element.active){
+
+                    if(element.value) {
+                        value = element.value;
+                    } else {
+
+                        if(element.selectedItem){
+                            value = element.selectedItem.innerText;
+                        }
 //
-                  }
+                    }
 
 
-              } else {
+                } else {
 
-                  value = (element.active) ? 'Yes' : 'No';
+                    value = (element.active) ? 'Yes' : 'No';
 
-              }
+                }
 
-              return (value) ? value : "";
-          },
+                return (value) ? value : "";
+            },
 
-          _getLabelVal : function(element) {
+            _getLabelVal : function(element) {
 
-              var label;
+                var label;
 
-              if(element.label){
-                  label = element.label;
-              } else if(element.dataset.label){
-                  label = element.dataset.label;
-              }
+                if(element.label){
+                    label = element.label;
+                } else if(element.dataset.label){
+                    label = element.dataset.label;
+                }
 
-              return (label) ? label : "";
-          },
+                return (label) ? label : "";
+            },
 
-          _getPrefixVal : function(element) {
-              var prefix = this._computeChildAttrText(element, 'prefix');
+            _getPrefixVal : function(element) {
+                var prefix = this._computeChildAttrText(element, 'prefix');
 
-              return (prefix) ? prefix : false;
+                return (prefix) ? prefix : false;
 
-          },
+            },
 
-          _getSuffixVal : function(element) {
-              var suffix = this._computeChildAttrText(element, 'suffix');
+            _getSuffixVal : function(element) {
+                var suffix = this._computeChildAttrText(element, 'suffix');
 
-              return (suffix) ? suffix : false;
-          },
+                return (suffix) ? suffix : false;
+            },
 
-          _computeChildAttrText : function(element, attrName) {
-              var children = element.getEffectiveChildren();
+            _computeChildAttrText : function(element, attrName) {
+                var children = element.getEffectiveChildren();
 
-              if(children.length > 0){
-                  var childArr = children.filter(function(d){ return (d.hasAttribute(attrName) )});
+                if(children.length > 0){
+                    var childArr = children.filter(function(d){ return (d.hasAttribute(attrName) )});
 
-                  return (childArr.length > 0) ? childArr[0].innerText : false;
-              } else {
-                  return false;
-              }
-          },
+                    return (childArr.length > 0) ? childArr[0].innerText : false;
+                } else {
+                    return false;
+                }
+            },
 
-          validate : function(){
+            validate : function(){
 
-              console.log(this.inputElem);
+                if(this.inputElem && this.inputElem.required) {
+                    return (this.inputElem.validate())
+                } else {
+                    return true;
+                }
+            }
+        });
 
-              if(this.inputElem && this.inputElem.required) {
-                  return (this.inputElem.validate())
-              } else {
-                  return true;
-              }
-          }
-      });
-
-  </script>
+    </script>
 </dom-module>
