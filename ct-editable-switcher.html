@@ -16,17 +16,22 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
                 display: block;
                 width: 100%;
             }
-
+            .input-suffix {
+              margin-right: 10px;
+            }
+            .input-prefix {
+              margin-left: 10px;
+            }
         </style>
 
         <div hidden$="[[editMode]]">
             <paper-input disabled label="[[labelVal]]" aria-hidden="true" value="[[inputVal]]">
                 <template is="dom-if" if="[[prefixVal]]">
-                    <div prefix>[[prefixVal]]</div>
+                    <div prefix class="input-prefix">[[prefixVal]]</div>
                 </template>
 
                 <template is="dom-if" if="[[suffixVal]]">
-                    <div suffix>[[suffixVal]]</div>
+                    <div suffix class="input-suffix">[[suffixVal]]</div>
                 </template>
             </paper-input>
         </div>
