@@ -16,17 +16,22 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
                 display: block;
                 width: 100%;
             }
-
+            .input-suffix {
+                margin-right: 10px;
+            }
+            .input-prefix {
+                margin-left: 10px;
+            }
         </style>
 
         <div hidden$="[[editMode]]">
             <paper-input disabled label="[[labelVal]]" aria-hidden="true" value="[[inputVal]]">
                 <template is="dom-if" if="[[prefixVal]]">
-                    <div prefix>[[prefixVal]]</div>
+                    <div prefix class="input-prefix">[[prefixVal]]</div>
                 </template>
 
                 <template is="dom-if" if="[[suffixVal]]">
-                    <div suffix>[[suffixVal]]</div>
+                    <div suffix class="input-suffix">[[suffixVal]]</div>
                 </template>
             </paper-input>
         </div>
@@ -49,7 +54,13 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
 
             properties: {
 
-                inputElem : Object,
+                valueProp : Object,
+
+                inputElem : {
+                    type: Object,
+                    observer: '_editModeChangeHandler'
+
+                },
 
                 inputVal : String,
 
@@ -66,7 +77,11 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
                 }
             },
 
-            attached : function(){
+            observers: [
+                '_valueUpdate(valueProp)'
+            ],
+
+            init : function(){
 
 //              async needed to ensure that values are there to be assigned
                 this.async(function(){
@@ -86,13 +101,13 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
                             throw 'Could not find input element, does it contain class of "input-element"? ';
                         }
 
-
-
-
-
                     }.bind(this));
                 })
 
+            },
+
+            _valueUpdate : function(val){
+                this.init();
             },
 
             _editModeChangeHandler : function(){
@@ -114,16 +129,23 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
             _getInputValue : function(element) {
                 var value;
 
-                if(!element.active){
+//                console.log('val', element)
 
+                if(!element.active){
+//                    console.log('val', element.value)
                     if(element.value) {
+
                         value = element.value;
                     } else {
+
+//                        this.async(function(){
+//                            console.log('elem', element.value);
+//                        })
+
 
                         if(element.selectedItem){
                             value = element.selectedItem.innerText;
                         }
-//
                     }
 
 
