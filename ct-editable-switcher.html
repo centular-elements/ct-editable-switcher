@@ -129,18 +129,11 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
             _getInputValue : function(element) {
                 var value;
 
-//                console.log('val', element)
-
                 if(!element.active){
 
                     if(element.value) {
                         value = element.value;
                     } else {
-
-//                        this.async(function(){
-//                            console.log('elem', element.value);
-//                        })
-
 
                         if(element.selectedItem){
                             value = element.selectedItem.innerText;
