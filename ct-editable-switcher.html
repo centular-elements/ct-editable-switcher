@@ -22,6 +22,11 @@ Element to switch between view/edit modes for form inputs on the Centular platfo
             .input-prefix {
                 margin-left: 10px;
             }
+            paper-input {
+            --paper-input-container-disabled: {
+              opacity: 0.55;
+            };
+          }
         </style>
 
         <div hidden$="[[editMode]]">
